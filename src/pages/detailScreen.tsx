@@ -16,14 +16,14 @@ const DetailScreen = () => {
         <div className="pokemon-detail-info-item">
           <span className="pokemon-detail-info-label">Type:</span>
           <span className="pokemon-detail-info-value">
-            {pokemonData.types.join(", ")}
+            {pokemonData.types && pokemonData.types.join(", ")}
           </span>
         </div>
 
         <div className="pokemon-detail-info-item">
           <span className="pokemon-detail-info-label">Abilities:</span>
           <span className="pokemon-detail-info-value">
-            {pokemonData.abilities.join(", ")}
+            {pokemonData.abilities && pokemonData.abilities.join(", ")}
           </span>
         </div>
 

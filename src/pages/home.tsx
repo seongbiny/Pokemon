@@ -4,15 +4,18 @@ import PokemonCard from "../components/pokemonCard";
 import "./home.css";
 import { useDispatch } from "react-redux";
 import { setPokemonData } from "../features/pokemonSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const pokemonPerPage = 5;
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [pokemonList, setPokemonList] = useState<any>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const observer = useRef<any>();
 
@@ -93,28 +96,50 @@ const Home = () => {
         ),
       };
       dispatch(setPokemonData(data));
+      navigate(`/detail/${searchInput}`);
     } catch (error) {
-      //
+      alert("없는 번호입니다.");
     } finally {
       //
     }
   };
 
+  const handleInputChange = (e: any) => {
+    setSearchInput(e.target.value);
+  };
+
+  const onClickSearch = () => {
+    getPokemon(searchInput);
+  };
+
   return (
-    <div className="container">
-      {pokemonList &&
-        pokemonList.map((pokemon: any, idx: any) => (
-          <div key={idx} onClick={() => getPokemon(pokemon.id)}>
-            <PokemonCard
-              name={pokemon.korean_name}
-              id={pokemon.id}
-              image={pokemon.sprites.front_default}
-            />
-          </div>
-        ))}
-      <div id="observer-element" style={{ height: "10px" }}></div>
-      {loading && <p>Loading...</p>}
-    </div>
+    <>
+      <div>
+        <label>
+          번호를 검색해보세요:
+          <input
+            type="number"
+            value={searchInput}
+            onChange={handleInputChange}
+          />
+        </label>
+        <button onClick={onClickSearch}>검색</button>
+      </div>
+      <div className="container">
+        {pokemonList &&
+          pokemonList.map((pokemon: any, idx: any) => (
+            <div key={idx} onClick={() => getPokemon(pokemon.id)}>
+              <PokemonCard
+                name={pokemon.korean_name}
+                id={pokemon.id}
+                image={pokemon.sprites.front_default}
+              />
+            </div>
+          ))}
+        <div id="observer-element" style={{ height: "10px" }}></div>
+        {loading && <p>Loading...</p>}
+      </div>
+    </>
   );
 };
 
