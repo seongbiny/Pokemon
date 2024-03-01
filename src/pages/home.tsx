@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PokemonCard from "../components/pokemonCard";
 import "./home.css";
+import { useDispatch } from "react-redux";
+import { setPokemonData } from "../features/pokemonSlice";
 
 const Home = () => {
   const pokemonPerPage = 5;
 
-  const [pokemonData, setPokemonData] = useState<any>([]);
+  const dispatch = useDispatch();
+
+  const [pokemonList, setPokemonList] = useState<any>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +41,7 @@ const Home = () => {
           korean_name: koreanName.name,
         });
       }
-      setPokemonData((prevData: any) => [...prevData, ...allPokemonData]);
+      setPokemonList((prevData: any) => [...prevData, ...allPokemonData]);
     } catch (error) {
       console.error("Error fetching Pokemon data:", error);
     } finally {
@@ -69,18 +73,44 @@ const Home = () => {
         observer.current.disconnect();
       }
     };
-  }, [pokemonData]);
+  }, [pokemonList]);
+
+  const getPokemon = async (id: any) => {
+    try {
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${id}`
+      );
+      const data = {
+        id: response.data.id,
+        name: response.data.name,
+        types: response.data.types.map((type: any) => type.type.name),
+        image: response.data.sprites.front_default,
+        koreanName: pokemonList[response.data.id - 1].korean_name,
+        height: response.data.height,
+        weight: response.data.weight,
+        abilities: response.data.abilities.map(
+          (ability: any) => ability.ability.name
+        ),
+      };
+      dispatch(setPokemonData(data));
+    } catch (error) {
+      //
+    } finally {
+      //
+    }
+  };
 
   return (
     <div className="container">
-      {pokemonData &&
-        pokemonData.map((pokemon: any, idx: any) => (
-          <PokemonCard
-            key={idx}
-            name={pokemon.korean_name}
-            id={pokemon.id}
-            image={pokemon.sprites.front_default}
-          />
+      {pokemonList &&
+        pokemonList.map((pokemon: any, idx: any) => (
+          <div key={idx} onClick={() => getPokemon(pokemon.id)}>
+            <PokemonCard
+              name={pokemon.korean_name}
+              id={pokemon.id}
+              image={pokemon.sprites.front_default}
+            />
+          </div>
         ))}
       <div id="observer-element" style={{ height: "10px" }}></div>
       {loading && <p>Loading...</p>}
