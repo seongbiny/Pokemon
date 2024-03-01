@@ -96,7 +96,7 @@ const Home = () => {
         ),
       };
       dispatch(setPokemonData(data));
-      navigate(`/detail/${searchInput}`);
+      navigate(`/detail/${response.data.id}`);
     } catch (error) {
       alert("없는 번호입니다.");
     } finally {
