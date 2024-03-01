@@ -1,7 +1,13 @@
 import React from "react";
 import "./pokemonCard.css";
 
-const PokemonCard = (props: any) => {
+type PropsType = {
+  id: number;
+  image: string;
+  name: string;
+};
+
+const PokemonCard = (props: PropsType) => {
   const { id, image, name } = props;
 
   return (

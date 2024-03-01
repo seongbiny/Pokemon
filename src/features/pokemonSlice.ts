@@ -1,21 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
 
 interface PokemonState {
   data: {
-    id: number;
+    id: string;
     name: string;
-    type: any;
+    types: string[];
     image: string;
+    koreanName: string;
+    height: string;
+    weight: string;
+    abilities: string[]
   };
 }
 
-const initialState: any = {
+const initialState: PokemonState = {
   data: {
-    id: 0,
+    id: '',
     name: '',
-    type: [],
-    image: ''
+    types: [],
+    image: '',
+    koreanName: '',
+    height: '',
+    weight: '',
+    abilities: []
   },
 };
 

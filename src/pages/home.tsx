@@ -12,7 +12,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [pokemonList, setPokemonList] = useState<any>([]);
+  const [pokemonList, setPokemonList] = useState<any[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -26,7 +26,7 @@ const Home = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const allPokemonData: any = [];
+      const allPokemonData: { string: any }[] = [];
       for (let i = 1; i <= pokemonPerPage; i++) {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${i + pokemonPerPage * page}`
@@ -44,7 +44,7 @@ const Home = () => {
           korean_name: koreanName.name,
         });
       }
-      setPokemonList((prevData: any) => [...prevData, ...allPokemonData]);
+      setPokemonList((prevData: any[]) => [...prevData, ...allPokemonData]);
     } catch (error) {
       console.error("Error fetching Pokemon data:", error);
     } finally {
@@ -78,7 +78,7 @@ const Home = () => {
     };
   }, [pokemonList]);
 
-  const getPokemon = async (id: any) => {
+  const getPokemon = async (id: string) => {
     try {
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${id}`
@@ -104,7 +104,7 @@ const Home = () => {
     }
   };
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
@@ -127,7 +127,7 @@ const Home = () => {
       </div>
       <div className="container">
         {pokemonList &&
-          pokemonList.map((pokemon: any, idx: any) => (
+          pokemonList.map((pokemon: any, idx: number) => (
             <div key={idx} onClick={() => getPokemon(pokemon.id)}>
               <PokemonCard
                 name={pokemon.korean_name}
