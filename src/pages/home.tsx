@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PokemonCard from "../components/pokemonCard";
+import "./home.css";
 
 const Home = () => {
   const [pokemonData, setPokemonData] = useState([]);
@@ -27,7 +28,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       {pokemonData.map((pokemon: any) => (
         <PokemonCard
           key={pokemon.id}
