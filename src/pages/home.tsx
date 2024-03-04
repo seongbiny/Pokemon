@@ -30,7 +30,7 @@ const Home = () => {
     fetchData();
   }, [page]);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const allPokemonData: { string: any }[] = [];
@@ -57,7 +57,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   const handleIntersection = (entries: IntersectionObserverEntry[]) => {
     if (entries[0].isIntersecting && !loading) {
