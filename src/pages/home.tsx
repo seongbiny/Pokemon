@@ -114,6 +114,7 @@ const Home = () => {
 
   return (
     <>
+      <PageHomeMetas />
       <div>
         <label>
           번호를 검색해보세요:

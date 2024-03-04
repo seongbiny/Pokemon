@@ -2,12 +2,14 @@ import React from "react";
 import "./detailScreen.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import { PageDetailMetas } from "../metadatas/metadatas";
 
 const DetailScreen = () => {
   const pokemonData = useSelector((state: RootState) => state.pokemon.data);
 
   return (
     <div className="pokemon-detail">
+      <PageDetailMetas />
       <img src={pokemonData.image} alt={pokemonData.name} />
       <h2>
         {pokemonData.name} {pokemonData.koreanName}
