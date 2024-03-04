@@ -1,13 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import axios from "axios";
 import PokemonCard from "../components/pokemonCard";
 import "./home.css";
 import { useDispatch } from "react-redux";
 import { setPokemonData } from "../features/pokemonSlice";
 import { useNavigate } from "react-router-dom";
+import { PageHomeMetas } from "../metadatas/metadatas";
 
 const Home = () => {
-  const pokemonPerPage = 5;
+  const pokemonPerPage = 15;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,7 +30,7 @@ const Home = () => {
     fetchData();
   }, [page]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const allPokemonData: { string: any }[] = [];
@@ -50,7 +57,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleIntersection = (entries: IntersectionObserverEntry[]) => {
     if (entries[0].isIntersecting && !loading) {
@@ -62,7 +69,7 @@ const Home = () => {
     const options = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.5,
+      threshold: 0,
     };
 
     observer.current = new IntersectionObserver(handleIntersection, options);
@@ -88,7 +95,7 @@ const Home = () => {
         name: response.data.name,
         types: response.data.types.map((type: any) => type.type.name),
         image: response.data.sprites.front_default,
-        koreanName: pokemonList[response.data.id - 1].korean_name,
+        koreanName: pokemonList[response.data.id - 1]?.korean_name ?? "",
         height: response.data.height,
         weight: response.data.weight,
         abilities: response.data.abilities.map(
@@ -112,6 +119,12 @@ const Home = () => {
     getPokemon(searchInput);
   };
 
+  const memoizedPokemonList = useMemo(() => {
+    return pokemonList.map((pokemon: any) => ({
+      ...pokemon,
+    }));
+  }, [pokemonList]);
+
   return (
     <>
       <PageHomeMetas />
@@ -127,8 +140,8 @@ const Home = () => {
         <button onClick={onClickSearch}>검색</button>
       </div>
       <div className="container">
-        {pokemonList &&
-          pokemonList.map((pokemon: any, idx: number) => (
+        {memoizedPokemonList &&
+          memoizedPokemonList.map((pokemon: any, idx: number) => (
             <div key={idx} onClick={() => getPokemon(pokemon.id)}>
               <PokemonCard
                 name={pokemon.korean_name}
@@ -138,7 +151,7 @@ const Home = () => {
             </div>
           ))}
         <div id="observer-element" style={{ height: "10px" }}></div>
-        {loading && <p>Loading...</p>}
+        {loading ? <h3>Loading...</h3> : null}
       </div>
     </>
   );
